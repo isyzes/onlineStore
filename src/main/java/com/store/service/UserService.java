@@ -4,7 +4,6 @@ import com.store.model.dto.CaptchaResponse;
 import com.store.model.user.Role;
 import com.store.model.user.Sex;
 import com.store.model.user.User;
-import com.store.repository.EmailRepository;
 import com.store.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,17 +19,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
-    private final static String secret = "6LcJz68UAAAAAO4dCyx_2i-DnPwy_9fAhdzAnWFZ";
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final MailService mailSender;
+
+    @Autowired
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, MailService mailSender) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.mailSender = mailSender;
+    }
+
+    private final static String SECRET_KEY = "6LcJz68UAAAAAO4dCyx_2i-DnPwy_9fAhdzAnWFZ";
     private final static String RECAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MailService mailSender;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -47,7 +48,7 @@ public class UserService implements UserDetailsService {
 
         boolean isUserValid = true;
 
-        String url = String.format(RECAPTCHA_URL, secret, recaptcha);
+        String url = String.format(RECAPTCHA_URL, SECRET_KEY, recaptcha);
         CaptchaResponse response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponse.class);
 
         if (!response.isSuccess()) {

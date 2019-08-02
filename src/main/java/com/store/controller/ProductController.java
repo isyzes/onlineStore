@@ -7,7 +7,6 @@ import com.store.model.product.Size;
 import com.store.model.user.User;
 import com.store.service.MailService;
 import com.store.service.ProductService;
-import com.store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

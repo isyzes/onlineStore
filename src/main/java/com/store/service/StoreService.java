@@ -1,9 +1,9 @@
 package com.store.service;
 
 import com.store.config.TelegramBot;
-import com.store.model.*;
 import com.store.model.product.Product;
 import com.store.model.product.Size;
+import com.store.model.store.*;
 import com.store.model.user.User;
 import com.store.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +14,27 @@ import java.util.Set;
 
 @Service
 public class StoreService {
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final AddressRepository addressRepository;
+    private final CreditCardRepository creditCardRepository;
+    private final ParcelRepository parcelRepository;
+    private final ProductItemRepository productItemRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
+    public StoreService(ProductRepository productRepository, OrderRepository orderRepository, AddressRepository addressRepository, CreditCardRepository creditCardRepository, ParcelRepository parcelRepository, ProductItemRepository productItemRepository, UserRepository userRepository) {
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
+        this.addressRepository = addressRepository;
+        this.creditCardRepository = creditCardRepository;
+        this.parcelRepository = parcelRepository;
+        this.productItemRepository = productItemRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private AddressRepository addressRepository;
+    private TelegramBot bot = TelegramBot.getInstance();
 
-    @Autowired
-    private CreditCardRepository creditCardRepository;
-
-    @Autowired
-    private ParcelRepository parcelRepository;
-
-    @Autowired
-    private ProductItemRepository productItemRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private TelegramBot bot = new TelegramBot();
 
     public void addToCart(User user, String productId, Size size) {
         if (UtilitiesService.isValidId(productId)) {
@@ -110,7 +109,7 @@ public class StoreService {
             user.setCreditCards(creditCard);
             userRepository.save(user);
         }
-        StringBuilder message = new StringBuilder("User: " + user.getAddresses().getName() + "paid for:\n");
+        StringBuilder message = new StringBuilder("User: " + user.getAddresses().getName() + " paid for:\n");
 
         double price = 0;
 
@@ -140,9 +139,10 @@ public class StoreService {
         message.append("Total price: ").append(price).append(" + cost of delivery").append("\n");
         message.append(user.getAddresses().toString());
 
-        bot.sendMessage(message.toString());
 
         user.getBasket().clear();
         orderRepository.deleteAllByUser(user);
+
+        bot.sendMessage(message.toString());
     }
 }

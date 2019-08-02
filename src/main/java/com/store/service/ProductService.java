@@ -1,8 +1,8 @@
 package com.store.service;
 
 import com.store.config.WebConfig;
-import com.store.model.Order;
-import com.store.model.ProductItem;
+import com.store.model.store.Order;
+import com.store.model.store.ProductItem;
 import com.store.model.product.Categories;
 import com.store.model.product.Colour;
 import com.store.model.product.Product;

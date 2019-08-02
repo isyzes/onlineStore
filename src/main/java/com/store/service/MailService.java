@@ -1,7 +1,7 @@
 package com.store.service;
 
 import com.store.config.MailConfig;
-import com.store.model.Email;
+import com.store.model.store.Email;
 import com.store.repository.EmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,13 +11,17 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class MailService {
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+    private final EmailRepository emailRepository;
 
     @Autowired
-    private EmailRepository emailRepository;
+    public MailService(JavaMailSender mailSender, EmailRepository emailRepository) {
+        this.mailSender = mailSender;
+        this.emailRepository = emailRepository;
+    }
 
     private final static String USERNAME = MailConfig.getUSERNAME();
+
 
     void send(String emailTo, String subject, String message) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();

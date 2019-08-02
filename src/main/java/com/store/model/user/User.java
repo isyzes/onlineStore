@@ -1,18 +1,15 @@
 package com.store.model.user;
 
-import com.store.model.Address;
-import com.store.model.CreditCard;
-import com.store.model.Order;
-import com.store.model.Parcel;
-import com.store.model.product.Product;
+import com.store.model.store.Address;
+import com.store.model.store.CreditCard;
+import com.store.model.store.Order;
+import com.store.model.store.Parcel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.text.DecimalFormat;
 import java.util.*;
 
 @Setter

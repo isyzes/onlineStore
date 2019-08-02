@@ -15,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,15 +28,18 @@ import java.util.Set;
 
 @Controller
 public class StoreController {
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    private final StoreService storeService;
+
+    private final MailService mailService;
 
     @Autowired
-    private StoreService storeService;
-
-    @Autowired
-    private MailService mailService;
-
+    public StoreController(ProductService productService, StoreService storeService, MailService mailService) {
+        this.productService = productService;
+        this.storeService = storeService;
+        this.mailService = mailService;
+    }
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -80,7 +82,7 @@ public class StoreController {
     @RequestMapping(value = "search")
     public String search(
             @AuthenticationPrincipal User user,
-            @RequestParam(name = "search") String search,
+            @RequestParam(name = "search",required = false) String search,
             @PageableDefault(sort = "rating", direction = Sort.Direction.DESC, size = 16) Pageable page,
             HttpServletRequest request,
             Model model,
@@ -89,6 +91,9 @@ public class StoreController {
         if (!StringUtils.isEmpty(email)) {
             mailService.addEmailRepository(email);
         }
+
+        if (search != null)
+            model.addAttribute("search", search);
 
         Page<Product> products = productService.searchProduct(search, page);
         addAttribute(model, user, products, request);
