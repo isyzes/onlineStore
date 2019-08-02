@@ -11,8 +11,8 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
     private final static String HOST = "smtp.yandex.ru";
-    private final static String USERNAME = "ignatovich.d@dst4brest.by";
-    private final static String PASSWORD = "1QAZwsx1";
+    private final static String USERNAME = "";
+    private final static String PASSWORD = "";
     private final static int PORT = 465;
     private final static String PROTOCOL = "smtps";
     private final static String DEBUG = "false";

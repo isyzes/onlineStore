@@ -79,18 +79,27 @@ public class StoreController {
         return "women";
     }
 
+    private String defaultValue;
     @RequestMapping(value = "search")
     public String search(
             @AuthenticationPrincipal User user,
-            @RequestParam(name = "search",required = false) String search,
+            @RequestParam(name = "search",required = false, defaultValue = "") String search,
             @PageableDefault(sort = "rating", direction = Sort.Direction.DESC, size = 16) Pageable page,
             HttpServletRequest request,
             Model model,
             @RequestParam(name = "newsletter", required = false) String email
     ) {
+        if (defaultValue == null && search != null)
+            defaultValue = search;
+        else if (!defaultValue.equals(search) && search != null)
+            defaultValue = search;
+
+
         if (!StringUtils.isEmpty(email)) {
             mailService.addEmailRepository(email);
         }
+
+
 
         if (search != null)
             model.addAttribute("search", search);
