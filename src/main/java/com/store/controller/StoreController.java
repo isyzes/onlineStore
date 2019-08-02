@@ -29,9 +29,7 @@ import java.util.Set;
 @Controller
 public class StoreController {
     private final ProductService productService;
-
     private final StoreService storeService;
-
     private final MailService mailService;
 
     @Autowired
@@ -56,22 +54,32 @@ public class StoreController {
     }
 
     @RequestMapping(value = "listProduct/{newArrivals}/{categories}/{section}", method = RequestMethod.GET)
-    public String getListProduct(
+    public String getListProduct(HttpServletRequest request, Model model,
             @AuthenticationPrincipal User user,
             @PathVariable String categories,
             @PathVariable String section,
             @PathVariable Boolean newArrivals,
+
             @PageableDefault(sort = "rating", direction = Sort.Direction.DESC, size = 16) Pageable page,
-            HttpServletRequest request,
-            Model model,
             @RequestParam(name = "brand", required = false) Set<String> brand,
             @RequestParam(name = "colour", required = false) Set<Colour> colour,
             @RequestParam(name = "sizeProduct", required = false) Set<Size> sizeProduct,
+
             @RequestParam(name = "newsletter", required = false) String email
     ) {
         if (!StringUtils.isEmpty(email)) {
             mailService.addEmailRepository(email);
         }
+
+        if (sizeProduct != null)
+            model.addAttribute("sizeProduct", sizeProduct);
+
+        if (colour != null)
+            model.addAttribute("colour", colour);
+
+        if (brand != null)
+            model.addAttribute("brand", brand.toString());
+
 
         Page<Product> products = productService.getListProduct(categories,section, newArrivals, brand, colour, sizeProduct, page);
 
@@ -79,6 +87,7 @@ public class StoreController {
         return "women";
     }
 
+    //кастыль
     private String defaultValue;
     @RequestMapping(value = "search")
     public String search(
@@ -89,20 +98,19 @@ public class StoreController {
             Model model,
             @RequestParam(name = "newsletter", required = false) String email
     ) {
-        if (defaultValue == null && search != null)
+        if (defaultValue == null && !StringUtils.isEmpty(search))
             defaultValue = search;
-        else if (!defaultValue.equals(search) && search != null)
+        else if (!defaultValue.equals(search) && !StringUtils.isEmpty(search))
             defaultValue = search;
+        else if (search.equals("") && !StringUtils.isEmpty(defaultValue))
+            search = defaultValue;
 
 
         if (!StringUtils.isEmpty(email)) {
             mailService.addEmailRepository(email);
         }
 
-
-
-        if (search != null)
-            model.addAttribute("search", search);
+        model.addAttribute("search", search);
 
         Page<Product> products = productService.searchProduct(search, page);
         addAttribute(model, user, products, request);
@@ -259,14 +267,17 @@ public class StoreController {
         model.addAttribute("product", product);
     }
 
+    //кастыль
     private String search;
+    private String submit;
     private void addAttribute(Model model, User user, Page<Product> products, HttpServletRequest request) {
 
         model.addAttribute("user", user);
         model.addAttribute("products", products);
         model.addAttribute("categories", Categories.values());
         model.addAttribute("sortParam", products.getSort().toString().toLowerCase().replace(": ", ","));
-
+        model.addAttribute("sizeAll", Size.values());
+        model.addAttribute("colorAll", Colour.values());
 
         if (request.getRequestURI().contains("search")) {
             String url = request.getRequestURI() + "?" + request.getQueryString() + "&";
@@ -282,6 +293,34 @@ public class StoreController {
         } else {
             model.addAttribute("url", request.getRequestURI());
         }
+
+        if (request.getQueryString() != null) {
+            if (request.getQueryString().contains("submit=Show+Result")) {
+                String url = request.getRequestURI() + "?" + request.getQueryString() + "&";
+                if (submit == null) submit = url;
+
+                if (!url.contains(submit)) {
+                    submit = url;
+                }
+                model.addAttribute("url", submit);
+            } else {
+                model.addAttribute("url", request.getRequestURI());
+            }
+        }
+
+
+
+
+
+        System.out.println("____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________");
+        System.out.println("____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________");
+        System.out.println("____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________");
+        System.out.println("____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________");
+        System.out.println("____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________");
+        System.out.println("____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________");
+
+        System.out.println(request.getRequestURI());
+        System.out.println(request.getQueryString());
     }
 
 }

@@ -84,4 +84,15 @@ class UtilitiesService {
 
         return false;
     }
+
+//    public static void main(String[] args) {
+//        String str = "(1, '9106ab0a-1ecd-4126-8ad6-f225200b67a9.8.jpg', 'Brand', 'MEN', 'Details', '91a9d265-6a5f-4e1f-9ea5-0ccc7dea2052.w2.jpg', 'Watches', 'true', '100.0', null, 'Hoodies & Sweatshirts', 'true', %s),";
+//        String size = "(%s, 'L'),";
+//        String color = "(%s, 'COLOR1'),";
+//
+//        for (int i = 46; i < 51; i++){
+//            System.out.println(String.format(color, i));
+//
+//        }
+//    }
 }

@@ -145,7 +145,7 @@ insert user(id ,email, password) value (1, 'isyzes@gmail.com', '$2a$08$2BFxOjxve
 insert user_role values(1, 'ROLE_ADMIN');
 
 insert into product (user_id, avatar_photo, brand, categories, details, main_photo, name, new_arrivals, price, rating, section, special_offers, id)
-  values (1, '74134d62-a736-45df-849f-91cf451d7c56.8.jpg', 'Brand', 'MEN', 'Details', '004b9109-ddec-4bff-9230-09555bd685b2.w8.jpg', 'Watches', 'true', '100.0', null, 'Hoodies & Sweatshirts', 'true', 2);
+  values (1, '74134d62-a736-45df-849f-91cf451d7c56.8.jpg', 'Brand', 'MEN', 'Details', '004b9109-ddec-4bff-9230-09555bd685b2.w8.jpg', 'Watches', 1, '100.0', null, 'Hoodies & Sweatshirts', 1, 2);
 
 
 insert into product_colour (product_id, colour) values (2, 'COLOR4');
