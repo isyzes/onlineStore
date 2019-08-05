@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -81,5 +82,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategoriesAndBrandInAndColourInAndSizeIn(Categories categories, Set<String> brand, Set<Colour> colour, Set<Size> size, Pageable pageable);
     Page<Product> findAllByBrandInAndColourInAndSizeIn(Set<Colour> colour, Set<String> brand, Set<Size> size, Pageable pageable);
 
-
+    /**search*/
+    Page<Product> findByNameContainingAndBrandIn(String name, Collection<String> brand, Pageable pageable);
+    Page<Product> findByNameContainingOrBrandContainingAndColourIn(String name, String brand,  Set<Colour> colour, Pageable pageable);
+    Page<Product> findByNameContainingOrBrandContainingAndSizeIn(String text, String text1, Set<Size> size, Pageable page);
+    Page<Product> findByNameContainingAndBrandInAndColourIn(String name, Set<String> brand, Set<Colour> colour, Pageable pageable);
+    Page<Product> findByNameContainingAndBrandInAndSizeIn(String text, Set<String> brand, Set<Size> size, Pageable page);
+    Page<Product> findByNameContainingAndSizeInAndColourIn(String text, Set<Size> size, Set<Colour> colour, Pageable page);
+    Page<Product> findByNameContainingAndBrandInAndColourInAndSizeIn(String text, Set<String> brand, Set<Colour> colour, Set<Size> size, Pageable page);
 }

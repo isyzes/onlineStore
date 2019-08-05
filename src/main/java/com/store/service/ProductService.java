@@ -1,5 +1,6 @@
 package com.store.service;
 
+import com.google.common.collect.Iterables;
 import com.store.config.WebConfig;
 import com.store.model.store.Order;
 import com.store.model.store.ProductItem;
@@ -106,9 +107,21 @@ public class ProductService {
             Random random = new Random();
 
             int first = random.nextInt(productList.size());
-            int second = random.nextInt(productList.size());
-            int third = random.nextInt(productList.size());
-            int fourth = random.nextInt(productList.size());
+
+            int second = -1;
+
+            while (second == first)
+                second = random.nextInt(productList.size());
+
+            int third = -1;
+
+            while (third == second || third == first)
+                third = random.nextInt(productList.size());
+
+            int fourth = -1;
+
+            while (fourth == first || fourth == second || fourth == third)
+                fourth = random.nextInt(productList.size());
 
             return Arrays.asList(productList.get(first), productList.get(second), productList.get(third), productList.get(fourth));
         }
@@ -126,8 +139,20 @@ public class ProductService {
         return null;
     }
 
-    public Page<Product> searchProduct(String text, Pageable page) {
-        return productRepository.findByNameContainingOrBrandContaining(text, text, page);
+    public Page<Product> searchProduct(String text, Set<String> brand, Set<Colour> colour, Set<Size> size, Pageable page) {
+        int method = defineMethod(brand, colour, size);
+
+        switch (method) {
+            case 1: return productRepository.findByNameContainingAndBrandIn(text, brand, page);
+            case 2: return productRepository.findByNameContainingOrBrandContainingAndColourIn(text, text, colour, page);
+            case 3: return productRepository.findByNameContainingOrBrandContainingAndSizeIn(text, text, size, page);
+            case 4: return productRepository.findByNameContainingAndBrandInAndColourIn(text, brand, colour, page);
+            case 5: return productRepository.findByNameContainingAndBrandInAndSizeIn(text, brand, size, page);
+            case 6: return productRepository.findByNameContainingAndSizeInAndColourIn(text, size, colour, page);
+            case 7: return productRepository.findByNameContainingAndBrandInAndColourInAndSizeIn(text, brand, colour, size, page);
+
+            default: return productRepository.findByNameContainingOrBrandContaining(text, text, page);
+        }
     }
 
     public List<Product> getAllProduct() {
