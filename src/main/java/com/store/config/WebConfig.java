@@ -25,7 +25,7 @@ import java.util.List;
 @EnableWebMvc
 @ComponentScan("com.store.controller")
 public class WebConfig implements WebMvcConfigurer {
-    private final static String UPLOAD_PATH = "D:/My projects/onlineStore/src/main/webapp/resources/images/uploads";
+    private final static String UPLOAD_PATH = System.getProperty("user.dir") + "/src/main/webapp/resources/images/uploads";
 
     @Bean
     public RestTemplate getRestTemplate() {
