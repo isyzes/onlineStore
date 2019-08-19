@@ -184,13 +184,14 @@ public class ProductService {
                 for (Order order: listOrderContainingRemovedProduct) {
                     Set<Order> orders = new HashSet<>();
 
-                    for (Order orderUser: order.getUser().getBasket()) {
+                    for (Order orderUser: order.getUsers().stream().findFirst().get().getBasket()) {
                         if (!orderUser.getId().equals(order.getId())) {
                             orders.add(orderUser);
                         }
                     }
 
-                    order.getUser().setBasket(orders);
+                    order.getUsers().stream().findFirst().get().setBasket(orders);
+
                     orderRepository.deleteById(order.getId());
                 }
             }

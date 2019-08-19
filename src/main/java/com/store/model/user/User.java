@@ -33,6 +33,7 @@ public class User implements UserDetails {
 
     @Column(name = "activation_code")
     private String activationCode;
+
     @Column(name = "activation_account")
     private Boolean isActivationAccount;
 
@@ -48,17 +49,25 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, targetEntity = Order.class)
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Order.class)
+    @JoinTable(name = "basket",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "order_id")}
+    )
     private Set<Order> basket = new HashSet<>();//корзина
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, targetEntity = Parcel.class)
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Parcel.class)
+    @JoinTable(name = "purchases",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "parcel_id")}
+    )
     private Set<Parcel> purchases = new HashSet<>(); // покупки
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "addresses_id")
     private Address addresses;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "credit_card_id")
     private CreditCard creditCards;
 

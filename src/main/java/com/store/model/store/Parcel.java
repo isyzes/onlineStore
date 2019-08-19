@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -28,7 +29,6 @@ public class Parcel {
     @JoinColumn(name = "credit_card_id")
     private CreditCard creditCard;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "basket")
+    private Set<User> users;
 }

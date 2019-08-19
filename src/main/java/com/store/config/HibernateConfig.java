@@ -40,31 +40,31 @@ public class HibernateConfig {
         return em;
     }
 
-//    @Bean
-//    public DataSource dataSource() {
-//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//        dataSource.setUrl("jdbc:mysql://localhost:3306/store?serverTimezone=UTC");
-//        dataSource.setUsername("root");
-//        dataSource.setPassword("1111");
-//        return dataSource;
-//    }
-
     @Bean
-    public DataSource dataSource() throws URISyntaxException {
-        URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
-
-        String username = dbUri.getUserInfo().split(":")[0];
-        String password = dbUri.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
-
-        DriverManagerDataSource basicDataSource = new DriverManagerDataSource();
-        basicDataSource.setUrl(dbUrl);
-        basicDataSource.setUsername(username);
-        basicDataSource.setPassword(password);
-
-        return basicDataSource;
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/store?serverTimezone=UTC");
+        dataSource.setUsername("root");
+        dataSource.setPassword("1111");
+        return dataSource;
     }
+
+//    @Bean
+//    public DataSource dataSource() throws URISyntaxException {
+//        URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
+//
+//        String username = dbUri.getUserInfo().split(":")[0];
+//        String password = dbUri.getUserInfo().split(":")[1];
+//        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+//
+//        DriverManagerDataSource basicDataSource = new DriverManagerDataSource();
+//        basicDataSource.setUrl(dbUrl);
+//        basicDataSource.setUsername(username);
+//        basicDataSource.setPassword(password);
+//
+//        return basicDataSource;
+//    }
 
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {

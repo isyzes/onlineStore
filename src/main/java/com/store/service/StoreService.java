@@ -9,6 +9,7 @@ import com.store.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,12 +56,12 @@ public class StoreService {
 
             Order order = new Order();
             order.setProduct(productItem);
-            order.setUser(user);
+            order.setUsers(Collections.singleton(user));
+            orderRepository.save(order);
 
-            if (!user.getBasket().contains(order)) {
-                user.getBasket().add(order);
-                orderRepository.save(order);
-            }
+            user.getBasket().add(order);
+
+            userRepository.save(user);
         }
     }
 
@@ -76,6 +77,7 @@ public class StoreService {
         }
         user.setBasket(orders);
 
+        userRepository.save(user);
         orderRepository.deleteById(orderId);
     }
 
@@ -122,9 +124,9 @@ public class StoreService {
 
                 Parcel parcel = new Parcel();
 
-                parcel.setCreditCard(creditCard);
+                parcel.setCreditCard(user.getCreditCards());
                 parcel.setAddress(user.getAddresses());
-                parcel.setUser(user);
+                parcel.setUsers(Collections.singleton(user));
                 parcel.setProduct(order.getProduct());
 
                 parcelRepository.save(parcel);
@@ -141,7 +143,9 @@ public class StoreService {
 
 
         user.getBasket().clear();
-        orderRepository.deleteAllByUser(user);
+        userRepository.save(user);
+
+        orderRepository.deleteAllByUsers(Collections.singleton(user));
 
         bot.sendMessage(message.toString());
     }
